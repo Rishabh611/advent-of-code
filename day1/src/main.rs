@@ -8,6 +8,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     for line in contents.lines() {
         let temp;
         temp = get_first_integer(line) * 10 + get_last_integer(line);
+        println!("{} {} {}" , temp, get_first_integer(line), get_last_integer(line) );
         res = res +temp;
     }
     println!("{res}");
