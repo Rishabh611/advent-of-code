@@ -1,12 +1,9 @@
 use std::collections::HashMap;
 
 pub fn get_first_integer(s: &str) -> i32 {
-    let mut res:i32;
+    let mut res:i32 = 0;
     let mut char_index = 0;
-    loop {
-        if char_index > s.len(){
-            break;
-        }
+    while char_index < s.len() {
         match s.chars().nth(char_index) {
             Some(c) => {
                 if c.is_digit(10) {
@@ -19,23 +16,23 @@ pub fn get_first_integer(s: &str) -> i32 {
         char_index += 1;
     }
     let spelled_out_ints = get_spelled_out_integer(s);
-    if get_spelled_out_integer(s).len() > 1 {
-        let (index, value) = spelled_out_ints.first().unwrap();
+    // println!("{:?}", spelled_out_ints);
+    for ints in spelled_out_ints.iter() {
+        let (index, value) = ints;
         if *index < char_index as i32 {
+            char_index = *index as usize;
             res = *value;
         }
     } 
+    // println!("{res}");
     res
 }
 
 pub fn get_last_integer(s: &str) -> i32 {
-    let mut res: i32;
-    let mut char_index: usize = s.len() as usize - 1;
-    loop {
-        if char_index < 0 {
-            break;
-        }
-        match s.chars().nth(char_index) {
+    let mut res: i32 = 0;
+    let mut char_index: i32 = s.len() as i32 - 1;
+    while char_index > -1 {
+        match s.chars().nth(char_index as usize) {
             Some(c) => {
                 if c.is_digit(10) {
                     res = c.to_digit(10).unwrap_or(0) as i32;
@@ -47,13 +44,15 @@ pub fn get_last_integer(s: &str) -> i32 {
         char_index -= 1;
     }
     let spelled_out_ints = get_spelled_out_integer(s);
-    if spelled_out_ints.len() > 0 {
-        let (index, value) = spelled_out_ints.last().unwrap();
-        if  *index > char_index as i32 {
+    // println!("{:?}", spelled_out_ints);
+    for ints in spelled_out_ints.iter() {
+        let (index, value) = ints;
+        if *index > char_index as i32 {
+            char_index = *index;
             res = *value;
         }
-    }
-    
+    } 
+    // println!("{res}");
     res
 }
 
@@ -71,8 +70,8 @@ pub fn get_spelled_out_integer(s: &str) -> Vec<(i32, i32)> {
     hashmap.insert(String::from("zero"), 0);
 
     let mut res_vec: Vec<(i32, i32)> = vec![];
-    let mut start_pos = 0;
     for (key, value) in hashmap {
+        let mut start_pos = 0; 
         while let Some(pos) = s[start_pos..].find(&key) {
             res_vec.push(((pos+start_pos) as i32, value));
             start_pos = start_pos + pos +  key.len();
