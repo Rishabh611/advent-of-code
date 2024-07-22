@@ -42,3 +42,45 @@ fn get_games_vector(game_str : &str) -> Vec<&str> {
     let games_vec: Vec<&str> = game_str.split(";").collect();
     games_vec
 }
+
+
+pub fn get_power(contents : &str) -> i32 {
+    let mut power: i32 = 0;
+
+    for game in contents.lines() {
+        let draw_str: Vec<&str> = game.split(":").collect();
+        let mut max_count_of_each_color: HashMap<&str, i32> = HashMap::new();
+
+        max_count_of_each_color.insert("red", 0);
+        max_count_of_each_color.insert("green", 0);
+        max_count_of_each_color.insert("blue", 0);
+
+        let draws = get_games_vector(draw_str.last().unwrap());
+
+        for draw in draws {
+            let color_str_in_draw: Vec<&str> = draw.split(",").collect();
+
+            for color_draw in color_str_in_draw {
+                let color_draw = color_draw.trim();
+                let color_parts: Vec<&str> = color_draw.split(" ").collect();
+
+                let color = *color_parts.last().unwrap();
+
+                let color_count: i32 = color_parts.first().unwrap().parse().unwrap();
+
+                if color_count > *max_count_of_each_color.get(color).unwrap() {
+                    max_count_of_each_color.insert(color, color_count);
+                }
+            }
+        }
+        let mut game_power = 1;
+
+        for value in max_count_of_each_color.values() {
+            game_power *= value;
+        }
+
+        power += game_power;
+    }
+
+    power
+}
